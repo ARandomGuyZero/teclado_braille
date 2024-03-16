@@ -1,8 +1,6 @@
 name: teclado_braille
 description: A new Flutter project.
-
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -11,14 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  flutter_blue: 0.8.0
+  flutter_blue: 
+  get: ^4.6.5
   permission_handler: ^11.3.0
-  flutter_reactive_ble: ^5.4.0
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
+
 flutter:
   uses-material-design: true

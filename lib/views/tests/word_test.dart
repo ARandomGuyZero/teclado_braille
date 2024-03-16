@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import '../resources/teclado_manager.dart';
+import '../resources/words.dart';
 
 class WordTest extends StatefulWidget {
-  const WordTest({super.key});
+  const WordTest({Key? key}) : super(key: key);
 
   @override
   WordTestState createState() => WordTestState();
 }
 
 class WordTestState extends State<WordTest> {
-  late String word;
+  late String palabra;
   TextEditingController controller = TextEditingController();
   late bool correct;
 
@@ -21,9 +23,8 @@ class WordTestState extends State<WordTest> {
   }
 
   void _generateRandomWord() {
-    final List<String> words = ['apple', 'banana', 'orange', 'grape', 'kiwi'];
-    final Random random = Random();
-    word = words[random.nextInt(words.length)];
+    final int indiceAleatorio = Random().nextInt(palabras.length);
+    palabra = palabras[indiceAleatorio];
   }
 
   @override
@@ -45,8 +46,7 @@ class WordTestState extends State<WordTest> {
             ),
             const SizedBox(height: 10),
             Text(
-              // Mostrar la palabra aquí
-              word, // Utiliza la palabra generada
+              palabra,
               style: const TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
@@ -72,6 +72,8 @@ class WordTestState extends State<WordTest> {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 20),
+            TecladoManager().buildTeclado(_onKeyPressed),
           ],
         ),
       ),
@@ -81,7 +83,57 @@ class WordTestState extends State<WordTest> {
   void _checkWord() {
     final enteredWord = controller.text.toLowerCase();
     setState(() {
-      correct = enteredWord == word;
+      correct = enteredWord == palabra;
     });
+
+    if (correct) {
+      // Mostrar el diálogo de ganar
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('¡Felicidades!'),
+          content: const Text('¡Has ganado!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _generateRandomWord(); // Generar una nueva palabra
+                controller.clear(); // Limpiar el campo de texto
+                setState(() {
+                  correct = false; // Reiniciar la bandera de correcto
+                });
+              },
+              child: const Text('Jugar de nuevo'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Mostrar el diálogo de perder
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Fin del juego'),
+          content: Text('¡Has perdido! La palabra era: $palabra'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _generateRandomWord(); // Generar una nueva palabra
+                controller.clear(); // Limpiar el campo de texto
+                setState(() {
+                  correct = false; // Reiniciar la bandera de correcto
+                });
+              },
+              child: const Text('Intentar de nuevo'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _onKeyPressed(String key) {
+    controller.text += key;
   }
 }
