@@ -4,7 +4,7 @@ import '../resources/teclado_manager.dart';
 import '../resources/words.dart';
 
 class WordTest extends StatefulWidget {
-  const WordTest({Key? key}) : super(key: key);
+  const WordTest({super.key});
 
   @override
   WordTestState createState() => WordTestState();
