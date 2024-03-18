@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../resources/teclado_manager.dart';
 
@@ -28,72 +29,48 @@ class _JuegoBrailleState extends State<JuegoBraille> {
       appBar: AppBar(
         title: const Text('Juego de Braille'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Selecciona la letra correspondiente:',
-              style: TextStyle(fontSize: 24),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              letraBraille,
-              style: const TextStyle(fontSize: 48),
-            ),
-            const SizedBox(height: 20),
-            TecladoManager().buildTeclado(_verificarRespuesta),
-            const SizedBox(height: 20),
-            if (letraIngresada != null)
-              Text(
-                'Letra ingresada: $letraIngresada',
-                style: const TextStyle(fontSize: 20),
+      body: RawKeyboardListener(
+        focusNode: _focusNode,
+        onKey: (RawKeyEvent event) {
+          TecladoManager().manejarEventoTeclado(event, _verificarRespuesta);
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Selecciona la letra correspondiente:',
+                style: TextStyle(fontSize: 24),
+                textAlign: TextAlign.center,
               ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                letraBraille,
+                style: const TextStyle(fontSize: 48),
+              ),
+              const SizedBox(height: 20),
+              TecladoManager().buildTeclado(_verificarRespuesta),
+              const SizedBox(height: 20),
+              if (letraIngresada != null)
+                Text(
+                  'Letra ingresada: $letraIngresada',
+                  style: const TextStyle(fontSize: 20),
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   void _seleccionarLetraAleatoria() {
-    // Mapa de letras braille
-    Map<String, String> brailleMap = {
-      'a': '⠁',
-      'b': '⠃',
-      'c': '⠉',
-      'd': '⠙',
-      'e': '⠑',
-      'f': '⠋',
-      'g': '⠛',
-      'h': '⠓',
-      'i': '⠊',
-      'j': '⠚',
-      'k': '⠅',
-      'l': '⠇',
-      'm': '⠍',
-      'n': '⠝',
-      'ñ': '⠻',
-      'o': '⠕',
-      'p': '⠏',
-      'q': '⠟',
-      'r': '⠗',
-      's': '⠎',
-      't': '⠞',
-      'u': '⠥',
-      'v': '⠧',
-      'w': '⠺',
-      'x': '⠭',
-      'y': '⠽',
-      'z': '⠵',
-    };
+    const String alfabeto = 'abcdefghijklmnopqrstuvwxyz';
+    final Random random = Random();
+    final int indiceAleatorio = random.nextInt(alfabeto.length);
+    final String letraAleatoria = alfabeto[indiceAleatorio];
 
-    // Selecciona una letra aleatoria
-    final List<String> letras = brailleMap.keys.toList();
-    final String letraAleatoria =
-        letras[(DateTime.now().microsecondsSinceEpoch % letras.length)];
     setState(() {
-      letraBraille = brailleMap[letraAleatoria]!;
+      letraBraille = letraAleatoria;
     });
   }
 
@@ -102,58 +79,19 @@ class _JuegoBrailleState extends State<JuegoBraille> {
       letraIngresada = letra;
     });
 
-    // Mapa de letras braille
-    Map<String, String> brailleMap = {
-      'a': '⠁',
-      'b': '⠃',
-      'c': '⠉',
-      'd': '⠙',
-      'e': '⠑',
-      'f': '⠋',
-      'g': '⠛',
-      'h': '⠓',
-      'i': '⠊',
-      'j': '⠚',
-      'k': '⠅',
-      'l': '⠇',
-      'm': '⠍',
-      'n': '⠝',
-      'ñ': '⠻',
-      'o': '⠕',
-      'p': '⠏',
-      'q': '⠟',
-      'r': '⠗',
-      's': '⠎',
-      't': '⠞',
-      'u': '⠥',
-      'v': '⠧',
-      'w': '⠺',
-      'x': '⠭',
-      'y': '⠽',
-      'z': '⠵',
-    };
-
-    // Obtiene la letra correspondiente a la forma braille
-    String? letraCorrespondiente;
-    brailleMap.forEach((key, value) {
-      if (value == letra) {
-        letraCorrespondiente = key;
-      }
-    });
-
     // Muestra el resultado
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Resultado'),
-        content: letraCorrespondiente != null
-            ? Text('¡Correcto! La letra es: $letraCorrespondiente')
+        content: letra == letraBraille
+            ? Text('¡Correcto! La letra es: $letra')
             : const Text('Incorrecto. Intenta de nuevo.'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              if (letraCorrespondiente != null) {
+              if (letra == letraBraille) {
                 _seleccionarLetraAleatoria(); // Selecciona una nueva letra
                 setState(() {
                   letraIngresada = null; // Reinicia la letra ingresada

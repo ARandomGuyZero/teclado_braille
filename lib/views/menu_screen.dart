@@ -6,7 +6,7 @@ import 'package:teclado_braille/views/settings/ble_screen.dart';
 import 'package:teclado_braille/views/tests/word_test.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({Key? key});
+  const MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
