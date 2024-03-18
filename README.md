@@ -1,16 +1,9 @@
 # teclado_braille
 
-A new Flutter project.
+Teclado braille
 
-## Getting Started
+## ¿En que consiste?
 
-This project is a starting point for a Flutter application.
+Este proyecto creado en flutter permite usar una aplicaccion de teclado braille en flutter.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![teclado_braille-2024-03-18-15-11-13](https://github.com/ARandomGuyZero/teclado_braille/assets/118926925/bceb6f5b-2173-4c32-99fa-3ffaf8ddfb48)
