@@ -1,72 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:get/get.dart';
-import 'ble_controller.dart';
+import '../menu_screen.dart';
 
 class BleScreen extends StatelessWidget {
   const BleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Bluetooth LE'),
+        centerTitle: true,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("BLE SCANNER"),
-        ),
-        body: GetBuilder<BleController>(
-          init: BleController(),
-          builder: (BleController controller) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  StreamBuilder<List<ScanResult>>(
-                      stream: controller.scanResults,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Expanded(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  final data = snapshot.data![index];
-                                  return Card(
-                                    elevation: 2,
-                                    child: ListTile(
-                                      title: Text(data.device.name),
-                                      subtitle: Text(data.device.id.id),
-                                      trailing: Text(data.rssi.toString()),
-                                      onTap: () => controller
-                                          .connectToDevice(data.device),
-                                    ),
-                                  );
-                                }),
-                          );
-                        } else {
-                          return const Center(
-                            child: Text("No Device Found"),
-                          );
-                        }
-                      }),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        controller.scanDevices();
-                        // await controller.disconnectDevice();
-                      },
-                      child: const Text("SCAN")),
-                ],
-              ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const BleDeviceScanScreen()),
             );
           },
+          child: const Text('Escanear Dispositivos Bluetooth LE'),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Acción al presionar el botón de más
+          // En este caso, navegaremos a la pantalla del menú
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MenuScreen()),
+          );
+        },
+        tooltip: 'Menú',
+        child: const Icon(Icons.menu),
+      ),
+    );
+  }
+}
+
+class BleDeviceScanScreen extends StatelessWidget {
+  const BleDeviceScanScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Aquí implementarías la lógica para escanear dispositivos Bluetooth LE
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Escaneo de Dispositivos Bluetooth LE'),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child:
+            CircularProgressIndicator(), // Ejemplo de indicador de progreso mientras se escanean dispositivos
       ),
     );
   }
